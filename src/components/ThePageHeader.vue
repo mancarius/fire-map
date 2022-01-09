@@ -26,9 +26,9 @@ header {
   flex-wrap: nowrap;
   padding: 0.5rem;
   color: $heading-text-color;
+  align-items: center;
 
-  &*:first-child {
-    margin-left: 0;
+  & *:first-child {
     margin-right: auto;
   }
 }
