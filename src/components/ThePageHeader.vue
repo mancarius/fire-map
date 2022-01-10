@@ -24,7 +24,7 @@ export default defineComponent({
 header {
   display: flex;
   flex-wrap: nowrap;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   color: $heading-text-color;
   align-items: center;
 

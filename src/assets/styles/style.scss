@@ -1,4 +1,5 @@
 @import 'globals';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap');
 
 body {
     padding: 0;
@@ -7,14 +8,21 @@ body {
     flex-flow: column;
     height: 100vh;
     background-color: $body-background-color;
+    font-family: 'Roboto',
+        sans-serif;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     margin: 0;
 }
 
 h1 {
-    font-size: larger;
+    font-size: x-large;
+    background: -webkit-linear-gradient(#e53935, #ffdd60);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 h3 {
