@@ -35,23 +35,31 @@ export default defineComponent({
     const date = ref<[Date, Date]>([startDate, maxDate || new Date()]);
 
     const dateToReverseArray = (_date: Date): number[] => {
-      return [
-        _date.getDate(),
-        _date.getMonth() + 1,
-        _date.getFullYear(),
-      ].reverse();
+      if (_date) {
+        return [
+          _date.getDate(),
+          _date.getMonth() + 1,
+          _date.getFullYear(),
+        ].reverse();
+      } else {
+        return [];
+      }
     };
 
     const format = ([start, end]: Date[]) => {
       const startDate = dateToReverseArray(start);
-      const endDate = dateToReverseArray(end);
+      const endDate = end ? dateToReverseArray(end) : startDate;
 
       return `${startDate.join("/")} - ${endDate.join("/")}`;
     };
 
     watch(date, (next) => {
       if (next) {
-        emit("update:selectedRange", next);
+        let [start, end] = next;
+        if (!end) {
+          end = new Date(start.valueOf());
+        }
+        emit("update:selectedRange", [start, end]);
       }
     });
 
