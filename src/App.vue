@@ -1,72 +1,42 @@
 <template>
   <the-page-header>
-    <datepicker-range v-model:selectedRange="date" />
+    <nav>
+      <router-link :to="{ name: 'About' }">About</router-link>
+    </nav>
   </the-page-header>
   <main class="main-container">
-    <fire-map :markersCoords="markersCoords" />
+    <router-view></router-view>
     <base-loader-frame v-if="loading" />
   </main>
-  <the-page-footer />
+  <the-page-footer> Mattia Mancarella </the-page-footer>
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, watch } from "vue";
+import { computed, defineComponent } from "vue";
+import { useStore } from "vuex";
 import BaseLoaderFrame from "./components/BaseLoaderFrame.vue";
-import DatepickerRange from "./components/DatepickerRange.vue";
-import FireMap from "./components/FireMap.vue";
 import ThePageFooter from "./components/ThePageFooter.vue";
 import ThePageHeader from "./components/ThePageHeader.vue";
-import FiresApiService from "./services/FiresApiService";
 
 export default defineComponent({
   components: {
     ThePageHeader,
     ThePageFooter,
-    FireMap,
-    DatepickerRange,
     BaseLoaderFrame,
   },
   setup() {
-    const date: Ref<[Date, Date] | null> = ref(null);
-    const markersCoords: Ref<[number, number][]> = ref([]);
-    const api = process.env.VUE_APP_API_URL;
-    const apiService = new FiresApiService(api);
-
-    watch(date, (next) => {
-      if (next) {
-        markersCoords.value = apiService
-          .filterByDateRange(...next)
-          .map(({ latitude, longitude }) => [latitude, longitude]);
-      }
-    });
+    const { state } = useStore();
+    const loading = computed(() => state.loading);
+    const toast = computed(() => state.toast);
 
     return {
-      date,
-      markersCoords,
-      loading: ref(true),
-      apiService,
+      loading,
+      toast,
     };
   },
 
-  mounted() {
-    this.apiService
-      .load()
-      .then(() => {
-        this.markersCoords = this.apiService.data.map(
-          ({ latitude, longitude }) => [latitude, longitude]
-        );
-      })
-      .catch((error) => {
-        console.warn(error);
-        this.openToast("Impossible to load fires data", "error");
-      })
-      .finally(() => {
-        this.loading = false;
-      });
-  },
-
   methods: {
-    openToast(message: string, type = "info") {
+    openToast(message: string, type: string) {
       this.$toast.open({
         message,
         type,
@@ -76,9 +46,11 @@ export default defineComponent({
   },
 
   watch: {
-    markersCoords(next) {
-      if (next.length === 0) {
-        this.openToast("No fires found in this periods");
+    toast(next) {
+      if (next) {
+        const { message, type = "info" }: { message: string; type: string } =
+          next;
+        this.openToast(message, type);
       }
     },
   },
