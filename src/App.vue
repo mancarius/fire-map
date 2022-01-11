@@ -8,7 +8,19 @@
     <router-view></router-view>
     <base-loader-frame v-if="loading" />
   </main>
-  <the-page-footer> Mattia Mancarella </the-page-footer>
+  <the-page-footer>
+    2022 -
+    <a
+      href="https://www.mattiamancarella.com"
+      title="Mattia Mancarella's web page"
+    >
+      Mattia Mancarella
+    </a>
+    -
+    <a href="https://github.com/mancarius/fire-map" title="Git repository">
+      Git repo
+    </a>
+  </the-page-footer>
 </template>
 
 <script lang="ts">
