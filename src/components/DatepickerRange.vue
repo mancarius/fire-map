@@ -6,7 +6,6 @@
     :maxDate="maxDate"
     :format="format"
     range
-    dark
   ></Datepicker>
 </template>
 
