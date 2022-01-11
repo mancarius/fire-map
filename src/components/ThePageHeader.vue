@@ -1,6 +1,8 @@
 <template>
   <header>
-    <h1>{{ appName }}</h1>
+    <router-link :to="{ name: 'Home' }">
+      <h1>{{ appName }}</h1>
+    </router-link>
     <slot></slot>
   </header>
 </template>
@@ -19,7 +21,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import "../assets/styles/globals";
 header {
   display: flex;
@@ -30,6 +32,15 @@ header {
 
   & *:first-child {
     margin-right: auto;
+  }
+
+  a {
+    text-decoration: none;
+    color: #fafafa;
+
+    &:hover {
+      text-decoration: inherit;
+    }
   }
 }
 </style>

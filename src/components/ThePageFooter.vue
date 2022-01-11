@@ -1,7 +1,9 @@
 <template>
   <footer>
     <h3>{{ appName }}</h3>
-    <slot></slot>
+    <p>
+      <slot></slot>
+    </p>
   </footer>
 </template>
 
@@ -24,12 +26,17 @@ export default defineComponent({
 footer {
   display: flex;
   flex-wrap: nowrap;
+  align-items: center;
   color: $heading-text-color;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
 
-  &*:first-child {
-    margin-left: 0;
+  & *:first-child {
     margin-right: auto;
+  }
+
+  p {
+    margin: 0;
+    font-size: small;
   }
 }
 </style>
