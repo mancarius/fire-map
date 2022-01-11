@@ -39,7 +39,7 @@ header {
     color: #fafafa;
 
     &:hover {
-      text-decoration: inherit;
+      font-weight: bold;
     }
   }
 }
