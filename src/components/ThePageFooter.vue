@@ -21,7 +21,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import "../assets/styles/globals";
 footer {
   display: flex;
@@ -37,6 +37,16 @@ footer {
   p {
     margin: 0;
     font-size: small;
+
+    a {
+      text-decoration: none;
+      color: inherit;
+
+      &:hover {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+    }
   }
 }
 </style>
