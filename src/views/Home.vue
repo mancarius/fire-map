@@ -1,12 +1,12 @@
 <template>
-  <fire-map />
+  <fires-map />
 </template>
 
 <script lang="ts">
-import FireMap from "@/components/FireMap.vue";
+import FiresMap from "@/components/FiresMap.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  components: { FireMap },
+  components: { FiresMap },
 });
 </script>

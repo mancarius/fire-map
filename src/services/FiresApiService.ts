@@ -2,6 +2,11 @@ import { FireData } from "@/types/FireData";
 import fetchApi from "@/utils/fetchApi";
 import MockFiresApi from "@/utils/MockFiresApi";
 
+/**
+ *
+ *
+ * @class FiresApiService
+ */
 class FiresApiService {
   private _api: string;
   private _data: FireData[] = [];
@@ -11,8 +16,10 @@ class FiresApiService {
   }
 
   /**
+   * Gets remote data and initialize the service
    *
-   * @returns
+   * @return {*}  {Promise<void>}
+   * @memberof FiresApiService
    */
   async load(): Promise<void> {
     const useMock = process.env.VUE_APP_API_SOURCE === "local";
@@ -27,7 +34,7 @@ class FiresApiService {
   }
 
   /**
-   *
+   * Returns the entire fires list
    *
    * @readonly
    * @type {FireData[]}
@@ -38,12 +45,14 @@ class FiresApiService {
   }
 
   /**
+   * Return fires in the passed range
    *
-   * @param start
-   * @param end
-   * @returns
+   * @param {Date} start Starting date
+   * @param {Date} [end=new Date()] End date. If not present, uses the current date
+   * @return {FireData[]}
+   * @memberof FiresApiService
    */
-  filterByDateRange(start: Date, end: Date): FireData[] {
+  filterByDateRange(start: Date, end: Date = new Date()): FireData[] {
     start.setHours(0, 0, 0);
     end.setHours(23, 59, 59);
 
@@ -54,9 +63,12 @@ class FiresApiService {
   }
 
   /**
+   * Validate url
    *
-   * @param string
-   * @returns
+   * @private
+   * @param {string} string
+   * @return {*}  {boolean}
+   * @memberof FiresApiService
    */
   private _isValidHttpUrl(string: string): boolean {
     let url;

@@ -8,7 +8,12 @@
         :metric="true"
       ></l-control-scale>
       <l-control position="topright">
-        <datepicker-range v-model:selectedRange="date" />
+        <datepicker-range
+          @dateChange="setDateRange($event)"
+          :minDate="minDate"
+          :maxDate="maxDate"
+          :startDate="startDate"
+        />
       </l-control>
       <l-circle
         :lat-lng="coords"
@@ -38,7 +43,7 @@ import FiresApiService from "@/services/FiresApiService";
 import { useStore } from "vuex";
 
 export default defineComponent({
-  name: "FireMap",
+  name: "FiresMap",
   components: {
     LMap,
     LTileLayer,
@@ -65,29 +70,43 @@ export default defineComponent({
   },
 
   setup() {
-    const date: Ref<[Date, Date] | null> = ref(null);
     const markersCoords: Ref<[number, number][]> = ref([]);
     const api = process.env.VUE_APP_API_URL;
     const apiService = new FiresApiService(api);
     const store = useStore();
     const isMapReady = ref(false);
     const isDataReady = ref(false);
+    const minDate = process.env.VUE_APP_DATEPICKER_MIN_DATE
+      ? new Date(process.env.VUE_APP_DATEPICKER_MIN_DATE)
+      : null;
+    const maxDate = process.env.VUE_APP_DATEPICKER_MAX_DATE
+      ? new Date(process.env.VUE_APP_DATEPICKER_MAX_DATE)
+      : null;
+    const startDate: Date | null =
+      maxDate instanceof Date ? new Date(maxDate.getTime()) : new Date();
+    startDate instanceof Date && startDate.setDate(startDate.getDate() - 7);
 
-    const loadCoords = (dateRange: [Date, Date] | null) => {
-      if (dateRange) {
-        markersCoords.value = apiService
-          .filterByDateRange(...dateRange)
-          .map(({ latitude, longitude }) => [latitude, longitude]);
-      }
-    };
+    const loadCoordsByService =
+      (service: FiresApiService) => (dateRange?: [Date, Date] | null) => {
+        if (dateRange) {
+          markersCoords.value = service
+            .filterByDateRange(...dateRange)
+            .map(({ latitude, longitude }) => [latitude, longitude]);
+        } else {
+          markersCoords.value = service.data.map(({ latitude, longitude }) => [
+            latitude,
+            longitude,
+          ]);
+        }
+      };
 
     const checkCoordsLength = (coords: [number, number][]) => {
       if (coords.length === 0) {
-        store.dispatch("showInfo", "No fires found in this periods");
+        store.dispatch("showInfo", "No fires found in this period");
       }
     };
 
-    watch(date, loadCoords);
+    const setDateRange = loadCoordsByService(apiService);
 
     watch(markersCoords, checkCoordsLength);
 
@@ -99,32 +118,30 @@ export default defineComponent({
       }
     });
 
-    onMounted(() => {
-      apiService
-        .load()
-        .then(() => {
-          markersCoords.value = apiService.data.map(
-            ({ latitude, longitude }) => [latitude, longitude]
-          );
-        })
-        .catch((error) => {
-          console.warn(error);
-          store.dispatch("showError", "Impossible to load fires data");
-        })
-        .finally(() => {
-          isDataReady.value = true;
-        });
+    onMounted(async () => {
+      try {
+        await apiService.load();
+        loadCoordsByService(apiService)();
+      } catch (error) {
+        console.warn(error);
+        store.dispatch("showError", "Impossible to load fires data");
+      }
+
+      isDataReady.value = true;
     });
 
     store.dispatch("loadingStop");
 
     return {
-      date,
       markersCoords,
       apiService,
       store,
-
       isMapReady,
+      minDate,
+      maxDate,
+      startDate,
+
+      setDateRange,
     };
   },
 });
