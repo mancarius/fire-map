@@ -22,7 +22,7 @@
         :fillColor="circle.fillColor"
         :fillOpacity="circle.fillOpacity"
         v-for="coords in markersCoords"
-        :key="coords"
+        :key="coords.join()"
       ></l-circle>
     </l-map>
   </div>
