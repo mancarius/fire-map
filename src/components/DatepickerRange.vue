@@ -16,22 +16,27 @@ export default defineComponent({
   name: "DatepickerRange",
 
   props: {
-    selectedRange: Array,
+    minDate: {
+      type: Date,
+      default: null,
+    },
+    maxDate: {
+      type: Date,
+      default: null,
+    },
+    startDate: {
+      type: Date,
+      default: new Date(),
+    },
   },
 
-  emits: ["update:selectedRange"],
+  emits: ["dateChange"],
 
   setup(props, { emit }) {
-    const minDate = process.env.VUE_APP_DATEPICKER_MIN_DATE
-      ? new Date(process.env.VUE_APP_DATEPICKER_MIN_DATE)
-      : null;
-    const maxDate = process.env.VUE_APP_DATEPICKER_MAX_DATE
-      ? new Date(process.env.VUE_APP_DATEPICKER_MAX_DATE)
-      : null;
-    const startDate: Date | null =
-      maxDate instanceof Date ? new Date(maxDate.getTime()) : new Date();
-    startDate instanceof Date && startDate.setDate(startDate.getDate() - 7);
-    const date = ref<[Date, Date]>([startDate, maxDate || new Date()]);
+    const date = ref<[Date, Date]>([
+      props.startDate,
+      props.maxDate || new Date(),
+    ]);
 
     const dateToReverseArray = (_date: Date): number[] => {
       if (_date) {
@@ -58,15 +63,12 @@ export default defineComponent({
         if (!end) {
           end = new Date(start.valueOf());
         }
-        emit("update:selectedRange", [start, end]);
+        emit("dateChange", [start, end]);
       }
     });
 
     return {
       date,
-      startDate,
-      minDate,
-      maxDate,
       format,
     };
   },
